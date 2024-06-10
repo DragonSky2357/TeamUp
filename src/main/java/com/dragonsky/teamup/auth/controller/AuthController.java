@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class AuthController {
     private final AuthFacade authFacade;
-    private final AuthService authService;
 
-    @PostMapping("/auth")
+    @PostMapping("/auth/signup")
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignupRequest request){
         this.authFacade.signUp(request);
         return ResponseEntity.ok().build();
     }
+
 }
