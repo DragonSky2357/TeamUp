@@ -1,9 +1,9 @@
 package com.dragonsky.teamup.global.security.filter;
 
-import com.dragonsky.teamup.global.security.jwt.JWTUtil;
-import com.dragonsky.teamup.global.security.login.CustomUserDetails;
-import com.dragonsky.teamup.member.model.Member;
-import com.dragonsky.teamup.member.model.Role;
+import com.dragonsky.teamup.global.util.jwt.JWTUtil;
+import com.dragonsky.teamup.global.security.member.MemberDetails;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -13,11 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.PrintWriter;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,51 +29,77 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String accessToken = null;
         Cookie[] cookies = request.getCookies();
 
-        String access = null;
-        String refresh = null;
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("access".equals(cookie.getName())) {
-                    access = cookie.getValue();
-                } else if ("refresh".equals(cookie.getName())) {
-                    refresh = cookie.getValue();
-                }
+        if(cookies==null){
+            filterChain.doFilter(request, response);
+            return;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("access")) {
+                accessToken = cookie.getValue();
             }
         }
 
-        if (access == null) {
+
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (jwtUtil.isExpired(access)) {
-            filterChain.doFilter(request, response);
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
+
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("access token expired");
+
+            //response status code
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String username = jwtUtil.getUsername(access);
-        String role = jwtUtil.getRole(access);
+        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(accessToken);
 
-//        var a = Arrays.stream(Role.values()).filter(r ->
-//            r.getKey().equals(role)
-//        );
+        if (!category.equals("access")) {
 
-        Member member = Member.builder()
-                .email(username)
-                .password("password")
-                .role(Role.valueOf(role))
-                .nickname("nickname")
-                .build();
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid access token");
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(member);
+            //response status code
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        Claims claims = jwtUtil.getMemberInfoFromToken(accessToken);
+
+        try {
+            setAuthentication(claims);
+        } catch (UsernameNotFoundException ex) {
+            log.error(ex.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return;
+        }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void setAuthentication(Claims claims) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = createAuthentication(claims);
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+    }
+
+    private Authentication createAuthentication(Claims claims) {
+        MemberDetails memberDetails = new MemberDetails(claims);
+        return new UsernamePasswordAuthenticationToken(memberDetails, null,
+                memberDetails.getAuthorities());
     }
 }

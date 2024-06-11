@@ -1,4 +1,4 @@
-package com.dragonsky.teamup.global.security.login;
+package com.dragonsky.teamup.global.security.member;
 
 import com.dragonsky.teamup.member.model.Member;
 import com.dragonsky.teamup.member.repository.MemberRepository;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService implements UserDetailsService {
+public class MemberDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         Member member = memberRepository.findByEmail(email);
 
         if (member != null) {
-            return new CustomUserDetails(member);
+            return new MemberDetails(member);
         }
 
         return null;

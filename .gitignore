@@ -35,3 +35,11 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### env ###
+.env
+
+### docker ###
+docker-compose.yml
+my.cnf/
+mysql-data/

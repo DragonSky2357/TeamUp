@@ -30,6 +30,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(IllegalAccessException.class)
+    public ResponseEntity<?> handleMemberException(IllegalAccessException ex) {
+        Map<String, Object> response = new HashMap<>();
+
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleMemberException(Exception ex) {
+        Map<String, Object> response = new HashMap<>();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<?> handleMemberException(MemberException ex) {
         Map<String, Object> response = new HashMap<>();

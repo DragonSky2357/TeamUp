@@ -1,6 +1,8 @@
-package com.dragonsky.teamup.global.security.login;
+package com.dragonsky.teamup.global.security.member;
 
 import com.dragonsky.teamup.member.model.Member;
+import com.dragonsky.teamup.member.model.Role;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,8 +11,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @RequiredArgsConstructor
-public class CustomUserDetails implements UserDetails {
+public class MemberDetails implements UserDetails {
     private final Member member;
+
+    public MemberDetails(Claims claims){
+        Long id = claims.get("id",Long.class);
+        String username = claims.get("username",String.class);
+        Role role =Role.fromKey((String) claims.get("role"));
+
+        this.member = Member.builder()
+                .id(id)
+                .email(username)
+                .role(role)
+                .password("")
+                .nickname("")
+                .build();
+    }
+    public Long getId(){
+        return member.getId();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

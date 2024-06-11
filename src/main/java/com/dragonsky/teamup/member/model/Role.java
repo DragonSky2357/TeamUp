@@ -12,4 +12,13 @@ public enum Role {
 
     private final String key;
     private final String value;
+
+    public static Role fromKey(String key){
+        for (Role role : Role.values()) {
+            if (role.getKey().equals(key)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("No enum constant with key: " + key);
+    }
 }
