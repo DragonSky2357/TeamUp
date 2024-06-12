@@ -1,4 +1,4 @@
-package com.dragonsky.teamup.auth.exception;
+package com.dragonsky.teamup.member.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MemberException extends RuntimeException{
-    private final ErrorCode errorCode;
+    private final MemberErrorCode errorCode;
 }
