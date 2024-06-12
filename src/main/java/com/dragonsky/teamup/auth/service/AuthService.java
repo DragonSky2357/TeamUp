@@ -1,11 +1,11 @@
 package com.dragonsky.teamup.auth.service;
 
 import com.dragonsky.teamup.auth.dto.request.SignupRequest;
-import com.dragonsky.teamup.auth.exception.ErrorCode;
-import com.dragonsky.teamup.auth.exception.MemberException;
 import com.dragonsky.teamup.auth.model.Refresh;
 import com.dragonsky.teamup.auth.repository.RefreshRepository;
 import com.dragonsky.teamup.global.util.jwt.JWTUtil;
+import com.dragonsky.teamup.member.exception.MemberErrorCode;
+import com.dragonsky.teamup.member.exception.MemberException;
 import com.dragonsky.teamup.member.model.Member;
 import com.dragonsky.teamup.member.repository.MemberRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -41,7 +41,7 @@ public class AuthService {
 
         if (findMember != null) {
             log.warn("회원 가입 시도: 중복된 이메일 - {}", signupRequest.getEmail());
-            throw new MemberException(ErrorCode.DUPLICATED_MEMBER);
+            throw new MemberException(MemberErrorCode.DUPLICATED_MEMBER);
         }
         Member member = signupRequest.toEntity(passwordEncoder);
         memberRepository.save(member);
