@@ -1,8 +1,10 @@
 package com.dragonsky.teamup.global.exception;
 
-import com.dragonsky.teamup.auth.exception.ErrorCode;
-import com.dragonsky.teamup.auth.exception.MemberException;
+import com.dragonsky.teamup.auth.exception.AuthException;
+import com.dragonsky.teamup.game.exception.GameException;
+import com.dragonsky.teamup.member.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -31,6 +33,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<?> handleMemberException(BadRequestException ex) {
+        Map<String, Object> response = new HashMap<>();
+
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(IllegalAccessException.class)
     public ResponseEntity<?> handleMemberException(IllegalAccessException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -45,16 +55,31 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<?> handleMemberException(AuthException authException) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(commonExceptionResponse(authException.getErrorCode()));
+    }
+
     @ExceptionHandler(MemberException.class)
-    public ResponseEntity<?> handleMemberException(MemberException ex) {
+    public ResponseEntity<?> handleMemberException(MemberException memberException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(commonExceptionResponse(memberException.getErrorCode()));
+    }
+
+    @ExceptionHandler(GameException.class)
+    public ResponseEntity<?> handleGameException(GameException gameException) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(commonExceptionResponse(gameException.getErrorCode()));
+    }
+
+    private Map<String, Object> commonExceptionResponse(CommonException commonException) {
         Map<String, Object> response = new HashMap<>();
 
-        ErrorCode errorCode = ex.getErrorCode();
+        response.put("status", commonException.getStatus());
+        response.put("message", commonException.getMessage());
+        response.put("error", commonException.getError());
 
-        response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", errorCode.message);
-        response.put("error", errorCode);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return response;
     }
 }
