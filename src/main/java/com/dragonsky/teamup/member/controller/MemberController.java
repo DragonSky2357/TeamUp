@@ -36,6 +36,7 @@ public class MemberController {
     public ResponseEntity<Void> removeMember(
             @AuthenticationPrincipal MemberDetails memberDetails
     ) {
+        memberFacade.removeMember(memberDetails.getId());
         return ResponseEntity.ok().build();
     }
 }

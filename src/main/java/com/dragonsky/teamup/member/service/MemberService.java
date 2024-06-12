@@ -1,8 +1,8 @@
 package com.dragonsky.teamup.member.service;
 
-import com.dragonsky.teamup.auth.exception.ErrorCode;
-import com.dragonsky.teamup.auth.exception.MemberException;
 import com.dragonsky.teamup.member.dto.request.ModifyMemberRequest;
+import com.dragonsky.teamup.member.exception.MemberErrorCode;
+import com.dragonsky.teamup.member.exception.MemberException;
 import com.dragonsky.teamup.member.model.Member;
 import com.dragonsky.teamup.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,17 +20,17 @@ public class MemberService {
     public Member getMember(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(() ->
-                        new MemberException(ErrorCode.MEMBER_NOT_FOUND)
+                        new MemberException(MemberErrorCode.MEMBER_NOT_FOUND)
                 );
     }
 
     @Transactional
     public Member modifyMember(Long id, ModifyMemberRequest request) {
-        Member member =  this.getMember(id);
+        Member member = this.getMember(id);
 
-        Member.Modify(member,request);
+        Member.Modify(member, request);
 
-        log.info("id : {} 회원 정보 변경",member.getId());
+        log.info("id : {} 회원 정보 변경", member.getId());
 
         return memberRepository.save(member);
     }
@@ -39,7 +39,7 @@ public class MemberService {
     public void removeMember(Long id) {
         Member member = this.getMember(id);
 
-        log.info("id : {} 회원 삭제",member.getId());
+        log.info("id : {} 회원 삭제", member.getId());
 
         memberRepository.delete(member);
     }

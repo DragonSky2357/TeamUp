@@ -1,9 +1,10 @@
 package com.dragonsky.teamup.member.service;
 
-import com.dragonsky.teamup.auth.exception.MemberException;
+import com.dragonsky.teamup.auth.exception.AuthException;
 import com.dragonsky.teamup.global.util.cookie.CookieUtil;
 import com.dragonsky.teamup.global.util.jwt.JWTUtil;
 import com.dragonsky.teamup.member.dto.request.ModifyMemberRequest;
+import com.dragonsky.teamup.member.exception.MemberException;
 import com.dragonsky.teamup.member.model.Member;
 import com.dragonsky.teamup.member.model.Role;
 import com.dragonsky.teamup.member.repository.MemberRepository;
