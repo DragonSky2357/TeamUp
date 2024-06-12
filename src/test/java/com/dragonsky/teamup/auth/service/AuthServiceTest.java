@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,9 +31,6 @@ class AuthServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @MockBean
     private JWTUtil jwtUtil;
@@ -66,7 +62,7 @@ class AuthServiceTest {
 
     @Test
     @DisplayName("중복된 이메일 회원 가입 요청")
-    public void testSignUp_DuplicateEmail(){
+    public void testSignUp_DuplicateEmail() {
         // given
         Member member = Member.builder()
                 .email("test@naver.com")
@@ -83,18 +79,18 @@ class AuthServiceTest {
                 .build();
 
         // when & then
-        assertThrows(MemberException.class, ()->{
+        assertThrows(MemberException.class, () -> {
             authService.signUp(signupRequest);
         });
     }
 
     @Test
-    public void testReissue(){
+    public void testReissue() {
         // Given
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        Cookie refreshCookie  = new Cookie("refresh","testRefreshToken");
+        Cookie refreshCookie = new Cookie("refresh", "testRefreshToken");
         Cookie[] cookies = {refreshCookie};
 
         when(request.getCookies()).thenReturn(cookies);
