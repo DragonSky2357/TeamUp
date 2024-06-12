@@ -1,6 +1,8 @@
 package com.dragonsky.teamup.global.security.filter;
 
 import com.dragonsky.teamup.auth.dto.request.LoginRequest;
+import com.dragonsky.teamup.auth.exception.AuthErrorCode;
+import com.dragonsky.teamup.auth.exception.AuthException;
 import com.dragonsky.teamup.auth.model.Refresh;
 import com.dragonsky.teamup.auth.repository.RefreshRepository;
 import com.dragonsky.teamup.global.security.member.MemberDetails;
@@ -13,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -50,7 +53,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             log.info("{} 로그인 시도", loginRequest.getEmail());
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword(), null);
             return authenticationManager.authenticate(authToken);
-        } catch (Exception e) {
+        }catch (BadCredentialsException e) {
+            log.error(e.getMessage());
+            throw new AuthException(AuthErrorCode.BAD_CREDENTIAL);
+        }
+        catch (Exception e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }

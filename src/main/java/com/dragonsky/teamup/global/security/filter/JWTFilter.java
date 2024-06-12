@@ -1,7 +1,7 @@
 package com.dragonsky.teamup.global.security.filter;
 
-import com.dragonsky.teamup.global.util.jwt.JWTUtil;
 import com.dragonsky.teamup.global.security.member.MemberDetails;
+import com.dragonsky.teamup.global.util.jwt.JWTUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -32,7 +32,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
 
-        if(cookies==null){
+        if (cookies == null) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,13 +51,7 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
-
-            //response body
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            handleExpiredToken(request, response, e);
             return;
         }
 
@@ -74,7 +68,6 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-
 
         Claims claims = jwtUtil.getMemberInfoFromToken(accessToken);
 
@@ -101,5 +94,20 @@ public class JWTFilter extends OncePerRequestFilter {
         MemberDetails memberDetails = new MemberDetails(claims);
         return new UsernamePasswordAuthenticationToken(memberDetails, null,
                 memberDetails.getAuthorities());
+    }
+
+    private void handleExpiredToken(HttpServletRequest request, HttpServletResponse response, ExpiredJwtException e) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+
+        Cookie cookie = new Cookie("access", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        PrintWriter writer = response.getWriter();
+        writer.write("{\"error\": \"access token expired\"}");
+        writer.flush();
     }
 }
