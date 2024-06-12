@@ -4,7 +4,6 @@ import com.dragonsky.teamup.global.security.member.MemberDetails;
 import com.dragonsky.teamup.member.dto.request.ModifyMemberRequest;
 import com.dragonsky.teamup.member.dto.response.GetMemberResponse;
 import com.dragonsky.teamup.member.dto.response.ModifyMemberResponse;
-import com.dragonsky.teamup.member.dto.response.RemoveMemberResponse;
 import com.dragonsky.teamup.member.facade.MemberFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
