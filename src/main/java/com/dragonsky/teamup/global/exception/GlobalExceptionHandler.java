@@ -1,5 +1,6 @@
 package com.dragonsky.teamup.global.exception;
 
+import com.dragonsky.teamup.auth.exception.ErrorCode;
 import com.dragonsky.teamup.auth.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -48,9 +49,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleMemberException(MemberException ex) {
         Map<String, Object> response = new HashMap<>();
 
+        ErrorCode errorCode = ex.getErrorCode();
+
         response.put("status", HttpStatus.BAD_REQUEST.value());
-        response.put("message", ex.getMessage());
-        response.put("error", ex.getErrorCode());
+        response.put("message", errorCode.message);
+        response.put("error", errorCode);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

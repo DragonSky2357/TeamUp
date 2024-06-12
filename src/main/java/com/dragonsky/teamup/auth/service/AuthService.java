@@ -41,7 +41,7 @@ public class AuthService {
 
         if (findMember != null) {
             log.warn("회원 가입 시도: 중복된 이메일 - {}", signupRequest.getEmail());
-            throw new MemberException(ErrorCode.DUPLICATED_MEMBER, ErrorCode.DUPLICATED_MEMBER.message);
+            throw new MemberException(ErrorCode.DUPLICATED_MEMBER);
         }
         Member member = signupRequest.toEntity(passwordEncoder);
         memberRepository.save(member);
