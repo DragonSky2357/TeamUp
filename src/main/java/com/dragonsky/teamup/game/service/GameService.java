@@ -1,6 +1,9 @@
 package com.dragonsky.teamup.game.service;
 
 import com.dragonsky.teamup.game.dto.request.AddGameRequest;
+import com.dragonsky.teamup.game.dto.request.GameSearchRequest;
+import com.dragonsky.teamup.game.dto.request.GetGamesRequest;
+import com.dragonsky.teamup.game.dto.request.ModifyGameRequest;
 import com.dragonsky.teamup.game.exception.GameErrorCode;
 import com.dragonsky.teamup.game.exception.GameException;
 import com.dragonsky.teamup.game.model.Game;
@@ -9,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +34,13 @@ public class GameService {
         }
 
         Game saveGame = gameRepository.save(request.toEntity());
-        log.info("제작사 : {} 타이틀명 : {} 게임 등록 완료", saveGame.getTitle(), saveGame.getTitle());
+        log.info("게임 : {} 제작사 : {} 게임 등록 완료", saveGame.getTitle(), saveGame.getTitle());
 
         return saveGame;
     }
 
-    public Page<Game> getGames(int page, int size) {
-        return gameRepository.findAll(PageRequest.of(page, size));
+    public Page<Game> getGames(GetGamesRequest request) {
+        return gameRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
     }
 
     public Game getGetGameById(Long id) {
@@ -45,20 +50,29 @@ public class GameService {
                 );
     }
 
+    @Transactional
+    public Game modifyGame(Long id, ModifyGameRequest request) {
+        Game game = this.getGetGameById(id);
 
+        Game.modify(game, request);
 
-//    public Game getGameById(Long id) {
-//        return gameRepository.findById(id)
-//                .orElseThrow(() ->
-//                        new GameException(ErrorCode.GAME_NOT_FOUND)
-//                );
-//    }
-//
-//    public Game getGameByTitle(String title) {
-//        return gameRepository.findByTitle(title)
-//                .orElseThrow(()->
-//                        new GameException(ErrorCode.GAME_NOT_FOUND)
-//                );
-//    }
+        log.info("게임 : {} 제작사 : {} 게임 정보 업데이트", game.getTitle(), game.getProducer());
 
+        return gameRepository.save(game);
+    }
+
+    @Transactional
+    public void removeGame(Long id) {
+        Game game = this.getGetGameById(id);
+
+        log.info("게임 : {} 제작사 : {} 게임 정보 삭제", game.getTitle(), game.getProducer());
+
+        gameRepository.delete(game);
+    }
+
+    public Page<Game> getGamesBySearch(GameSearchRequest request) {
+        String title = request.getTitle();
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize(), Sort.by("title").ascending());
+        return gameRepository.findAllBySearch(title, pageable);
+    }
 }

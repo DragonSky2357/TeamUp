@@ -1,9 +1,10 @@
 package com.dragonsky.teamup.game.facade;
 
 import com.dragonsky.teamup.game.dto.request.AddGameRequest;
-import com.dragonsky.teamup.game.dto.response.AddGameResponse;
-import com.dragonsky.teamup.game.dto.response.GetGameByIdResponse;
-import com.dragonsky.teamup.game.dto.response.GetGamesResponse;
+import com.dragonsky.teamup.game.dto.request.GameSearchRequest;
+import com.dragonsky.teamup.game.dto.request.GetGamesRequest;
+import com.dragonsky.teamup.game.dto.request.ModifyGameRequest;
+import com.dragonsky.teamup.game.dto.response.*;
 import com.dragonsky.teamup.game.service.GameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,19 +26,19 @@ public class GameFacade {
         return GetGameByIdResponse.of(gameService.getGetGameById(id));
     }
 
-    public List<GetGamesResponse> getGames(int page, int size) {
-        return GetGamesResponse.of(gameService.getGames(page, size));
+    public List<GetGamesResponse> getGames(GetGamesRequest request) {
+        return GetGamesResponse.of(gameService.getGames(request));
     }
 
-//    public GetMemberResponse getMember(Long id) {
-//        return GetMemberResponse.of(gameService.getMember(id));
-//    }
-//
-//    public ModifyMemberResponse modifyMember(Long id, ModifyMemberRequest request) {
-//        return ModifyMemberResponse.of(gameService.modifyMember(id, request));
-//    }
-//
-//    public void removeMember(Long id) {
-//        gameService.removeMember(id);
-//    }
+    public List<GetGamesBySearchResponse> getGameBySearch(GameSearchRequest request) {
+        return GetGamesBySearchResponse.of(gameService.getGamesBySearch(request));
+    }
+
+    public ModifyGameResponse modifyGame(Long id,ModifyGameRequest request) {
+        return ModifyGameResponse.of(gameService.modifyGame(id,request));
+    }
+
+    public void removeGame(Long id) {
+        gameService.removeGame(id);
+    }
 }

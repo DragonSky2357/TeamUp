@@ -1,8 +1,7 @@
 package com.dragonsky.teamup.game.model;
 
+import com.dragonsky.teamup.game.dto.request.ModifyGameRequest;
 import com.dragonsky.teamup.global.entity.Timestamped;
-import com.dragonsky.teamup.member.dto.request.ModifyMemberRequest;
-import com.dragonsky.teamup.member.model.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -28,4 +27,10 @@ public class Game extends Timestamped {
 
     @Column(columnDefinition = "TEXT")
     private String logo;
+
+    public static void modify(Game game, ModifyGameRequest request) {
+        game.title = request.getTitle() != null ? request.getTitle() : game.title;
+        game.producer = request.getProducer() != null ? request.getProducer() : game.producer;
+        game.logo = request.getLogo() != null ? request.getLogo() : game.logo;
+    }
 }
