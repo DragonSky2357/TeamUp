@@ -28,7 +28,7 @@ public class MemberService {
     public Member modifyMember(Long id, ModifyMemberRequest request) {
         Member member = this.getMember(id);
 
-        Member.Modify(member, request);
+        Member.modify(member, request);
 
         log.info("id : {} 회원 정보 변경", member.getId());
 

@@ -32,8 +32,7 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String nickname;
 
-    public static Member Modify(Member member, ModifyMemberRequest request){
+    public static void modify(Member member, ModifyMemberRequest request){
         member.nickname = request.getNickname();
-        return member;
     }
 }
