@@ -53,11 +53,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             log.info("{} 로그인 시도", loginRequest.getEmail());
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword(), null);
             return authenticationManager.authenticate(authToken);
-        }catch (BadCredentialsException e) {
-            log.error(e.getMessage());
-            throw new AuthException(AuthErrorCode.BAD_CREDENTIAL);
         }
-        catch (Exception e) {
+        catch (IOException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
@@ -88,11 +85,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.getWriter().write("Login Failed");
+        response.getWriter().flush();
+        response.getWriter().close();
         log.info("{}님 로그인 실패", failed.getMessage());
     }
-
 
     private void addRefresh(Long id, String username, String refresh, Long expiredMs) {
         Date date = new Date(System.currentTimeMillis() + expiredMs);
