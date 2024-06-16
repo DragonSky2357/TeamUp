@@ -22,21 +22,21 @@ public class GameController {
     @PostMapping()
     public ResponseEntity<AddGameResponse> addGame(
             @Valid @RequestBody AddGameRequest request
-    ){
+    ) {
         return ResponseEntity.ok(gameFacade.addGame(request));
     }
 
     @GetMapping()
     public ResponseEntity<List<GetGamesResponse>> getGames(
             @ModelAttribute GetGamesRequest request
-    ){
+    ) {
         return ResponseEntity.ok(gameFacade.getGames(request));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<GetGameByIdResponse> getGameById(
             @PathVariable Long id
-    ){
+    ) {
         return ResponseEntity.ok(gameFacade.getGameById(id));
     }
 
@@ -44,7 +44,7 @@ public class GameController {
     @GetMapping("/search")
     public ResponseEntity<List<GetGamesBySearchResponse>> getGamesBySearch(
             @ModelAttribute GameSearchRequest request
-    ){
+    ) {
         return ResponseEntity.ok(gameFacade.getGameBySearch(request));
     }
 
@@ -52,14 +52,14 @@ public class GameController {
     public ResponseEntity<ModifyGameResponse> modifyGame(
             @PathVariable Long id,
             @RequestBody ModifyGameRequest request
-    ){
-        return ResponseEntity.ok(gameFacade.modifyGame(id,request));
+    ) {
+        return ResponseEntity.ok(gameFacade.modifyGame(id, request));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeGame(
-        @PathVariable Long id
-    ){
+            @PathVariable Long id
+    ) {
         gameFacade.removeGame(id);
         return ResponseEntity.ok().build();
     }

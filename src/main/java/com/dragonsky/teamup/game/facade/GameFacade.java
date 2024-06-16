@@ -23,7 +23,7 @@ public class GameFacade {
     }
 
     public GetGameByIdResponse getGameById(Long id) {
-        return GetGameByIdResponse.of(gameService.getGetGameById(id));
+        return GetGameByIdResponse.of(gameService.getGameById(id));
     }
 
     public List<GetGamesResponse> getGames(GetGamesRequest request) {

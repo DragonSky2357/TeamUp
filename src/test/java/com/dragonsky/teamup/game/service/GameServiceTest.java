@@ -151,7 +151,7 @@ class GameServiceTest {
         Game saveGame2 = gameRepository.save(game2);
 
         // when
-        gameService.getGetGameById(saveGame1.getId());
+        gameService.getGameById(saveGame1.getId());
 
         // then
         assertEquals(game1.getId(),saveGame1.getId());

@@ -43,7 +43,7 @@ public class GameService {
         return gameRepository.findAll(PageRequest.of(request.getPage(), request.getSize()));
     }
 
-    public Game getGetGameById(Long id) {
+    public Game getGameById(Long id) {
         return gameRepository.findById(id)
                 .orElseThrow(() ->
                         new GameException(GameErrorCode.GAME_NOT_FOUND)
@@ -52,7 +52,7 @@ public class GameService {
 
     @Transactional
     public Game modifyGame(Long id, ModifyGameRequest request) {
-        Game game = this.getGetGameById(id);
+        Game game = this.getGameById(id);
 
         Game.modify(game, request);
 
@@ -63,7 +63,7 @@ public class GameService {
 
     @Transactional
     public void removeGame(Long id) {
-        Game game = this.getGetGameById(id);
+        Game game = this.getGameById(id);
 
         log.info("게임 : {} 제작사 : {} 게임 정보 삭제", game.getTitle(), game.getProducer());
 
