@@ -27,6 +27,10 @@ public class MemberDetails implements UserDetails {
                 .nickname("")
                 .build();
     }
+    public Member getMember() {
+        return member;
+    }
+
     public Long getId(){
         return member.getId();
     }
