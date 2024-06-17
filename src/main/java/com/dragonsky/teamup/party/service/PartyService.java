@@ -52,6 +52,7 @@ public class PartyService {
 
         Member partyMember = party.getMember();
         if (!Objects.equals(partyMember.getId(), member.getId())) {
+            log.info("파티 ID : {} 멤버 : {} 수정 시도",party.getId(),member.getId());
             throw new PartyException(PartyErrorCode.PARTY_MODIFY_NOT_PERMISSION);
         }
 
@@ -69,6 +70,7 @@ public class PartyService {
 
         Member partyMember = party.getMember();
         if (!Objects.equals(partyMember.getId(), member.getId())) {
+            log.info("파티 ID : {} 멤버 : {} 삭제 시도",party.getId(),member.getId());
             throw new PartyException(PartyErrorCode.PARTY_DELETE_NOT_PERMISSION);
         }
 
