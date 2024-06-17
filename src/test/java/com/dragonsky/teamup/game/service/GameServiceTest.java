@@ -154,10 +154,10 @@ class GameServiceTest {
         gameService.getGameById(saveGame1.getId());
 
         // then
-        assertEquals(game1.getId(),saveGame1.getId());
-        assertEquals(game1.getTitle(),saveGame1.getTitle());
-        assertEquals(game2.getId(),saveGame2.getId());
-        assertEquals(game2.getTitle(),saveGame2.getTitle());
+        assertEquals(game1.getId(), saveGame1.getId());
+        assertEquals(game1.getTitle(), saveGame1.getTitle());
+        assertEquals(game2.getId(), saveGame2.getId());
+        assertEquals(game2.getTitle(), saveGame2.getTitle());
     }
 
     @Test
