@@ -1,8 +1,13 @@
 package com.dragonsky.teamup.global.exception;
 
+import com.dragonsky.teamup.auth.exception.AuthErrorCode;
 import com.dragonsky.teamup.auth.exception.AuthException;
+import com.dragonsky.teamup.game.exception.GameErrorCode;
 import com.dragonsky.teamup.game.exception.GameException;
+import com.dragonsky.teamup.member.exception.MemberErrorCode;
 import com.dragonsky.teamup.member.exception.MemberException;
+import com.dragonsky.teamup.party.exception.PartyErrorCode;
+import com.dragonsky.teamup.party.exception.PartyException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -57,25 +62,34 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<?> handleMemberException(AuthException authException) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        AuthErrorCode errorCode = authException.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
                 .body(commonExceptionResponse(authException.getErrorCode()));
     }
 
     @ExceptionHandler(MemberException.class)
     public ResponseEntity<?> handleMemberException(MemberException memberException) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        MemberErrorCode errorCode = memberException.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
                 .body(commonExceptionResponse(memberException.getErrorCode()));
     }
 
     @ExceptionHandler(GameException.class)
     public ResponseEntity<?> handleGameException(GameException gameException) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        GameErrorCode errorCode = gameException.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
                 .body(commonExceptionResponse(gameException.getErrorCode()));
+    }
+
+    @ExceptionHandler(PartyException.class)
+    public ResponseEntity<?> handleGameException(PartyException partyException) {
+        PartyErrorCode errorCode = partyException.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(commonExceptionResponse(errorCode));
     }
 
     private Map<String, Object> commonExceptionResponse(CommonException commonException) {
         Map<String, Object> response = new HashMap<>();
-
         response.put("status", commonException.getStatus());
         response.put("message", commonException.getMessage());
         response.put("error", commonException.getError());
