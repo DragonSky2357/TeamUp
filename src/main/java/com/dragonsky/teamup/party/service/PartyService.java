@@ -41,7 +41,7 @@ public class PartyService {
         return partyRepository.findPartyById(id);
     }
 
-    private Party getParty(Long id) {
+    public Party getParty(Long id) {
         return partyRepository.findById(id)
                 .orElseThrow(() -> new PartyException(PartyErrorCode.PARTY_NOT_FOUND));
     }
