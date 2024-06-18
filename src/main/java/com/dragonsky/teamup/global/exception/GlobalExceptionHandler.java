@@ -8,6 +8,8 @@ import com.dragonsky.teamup.member.exception.MemberErrorCode;
 import com.dragonsky.teamup.member.exception.MemberException;
 import com.dragonsky.teamup.party.exception.PartyErrorCode;
 import com.dragonsky.teamup.party.exception.PartyException;
+import com.dragonsky.teamup.partyComment.exception.PartyCommentErrorCode;
+import com.dragonsky.teamup.partyComment.exception.PartyCommentException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -84,6 +86,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PartyException.class)
     public ResponseEntity<?> handleGameException(PartyException partyException) {
         PartyErrorCode errorCode = partyException.getErrorCode();
+        return ResponseEntity.status(errorCode.getStatus())
+                .body(commonExceptionResponse(errorCode));
+    }
+
+    @ExceptionHandler(PartyCommentException.class)
+    public ResponseEntity<?> handleGameException(PartyCommentException partyCommentException) {
+        PartyCommentErrorCode errorCode = partyCommentException.getErrorCode();
         return ResponseEntity.status(errorCode.getStatus())
                 .body(commonExceptionResponse(errorCode));
     }
