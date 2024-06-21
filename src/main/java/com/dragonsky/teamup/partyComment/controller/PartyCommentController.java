@@ -24,7 +24,7 @@ public class PartyCommentController {
     private final PartyCommentFacade partyCommentFacade;
 
     @PostMapping("/{partyId}/comments")
-    public ResponseEntity<AddPartyCommentResponse> addParty(
+    public ResponseEntity<AddPartyCommentResponse> addPartyComment(
             @RequestBody @Valid AddPartyCommentRequest request,
             @PathVariable Long partyId,
             @AuthenticationPrincipal MemberDetails memberDetails
@@ -33,7 +33,7 @@ public class PartyCommentController {
     }
 
     @GetMapping("/{partyId}/comments")
-    public ResponseEntity<List<GetPartyCommentsResponse>> getPartys(
+    public ResponseEntity<List<GetPartyCommentsResponse>> getPartyComments(
             @ModelAttribute GetPartyCommentsRequest request,
             @PathVariable Long partyId
     ) {
@@ -41,7 +41,7 @@ public class PartyCommentController {
     }
 
     @GetMapping("/{partyId}/comments/{commentId}")
-    public ResponseEntity<GetPartyCommentResponse> getParty(
+    public ResponseEntity<GetPartyCommentResponse> getPartyComment(
             @PathVariable Long partyId,
             @PathVariable Long commentId
     ) {
